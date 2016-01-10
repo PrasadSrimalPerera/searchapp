@@ -22,6 +22,14 @@ public class SystemDocument extends Model {
     @Constraints.Required
     private Date publishedDate;
 
+    public void setDocumentContent(String documentContent) {
+        this.documentContent = documentContent;
+    }
+
+    public void setPublishedDate(Date publishedDate) {
+        this.publishedDate = publishedDate;
+    }
+
     @Constraints.Required
     @Lob
     private String documentContent;
@@ -48,21 +56,18 @@ public class SystemDocument extends Model {
         return publishedDate;
     }
 
-    public void setPublishedDate(Date publishedDate) {
-        this.publishedDate = publishedDate;
-    }
-
     public String getDocumentContent() {
         return documentContent;
     }
 
     public static void persistDocument(SystemDocument systemDocument) {
         SystemDocument documentExist;
-        if (finder.fetch("systemDocumentID").where().eq("documentName",
-                systemDocument.getDocumentName()).findUnique() != null) {
-                systemDocument.update();
-        }
-        else {
+        if ((documentExist = finder.where().eq("documentName",
+                systemDocument.getDocumentName()).findUnique()) != null) {
+            documentExist.setPublishedDate(systemDocument.getPublishedDate());
+            documentExist.setDocumentContent(systemDocument.getDocumentContent());
+            documentExist.update();
+        } else {
             systemDocument.save();
         }
     }

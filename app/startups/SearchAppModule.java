@@ -1,9 +1,7 @@
 package startups;
 
 import com.google.inject.AbstractModule;
-import ir.Indexer;
-import ir.IndexerActor;
-import ir.IrConfigurationManager;
+import ir.*;
 import play.libs.akka.AkkaGuiceSupport;
 
 /**
@@ -14,6 +12,8 @@ public class SearchAppModule extends AbstractModule implements AkkaGuiceSupport{
     protected void configure() {
         bind(IrConfigurationManager.class);
         bind(Indexer.class);
+        bind(Searcher.class);
         bindActor(IndexerActor.class, "indexer_actor");
+        bindActor(SearcherActor.class, "searcher_actor");
     }
 }

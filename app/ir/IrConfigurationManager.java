@@ -13,6 +13,8 @@ import play.Configuration;
 public class IrConfigurationManager {
     private  String indexPath;
     private  Analyzer systemDocumentAnalyzer;
+    private Integer maxSearchHitCount = -1;
+    private Integer searchPageSize = -1;
 
     @Inject
     private Configuration configuration;
@@ -34,4 +36,15 @@ public class IrConfigurationManager {
         return indexPath;
     }
 
+    public Integer getMaxSearchHitCount() {
+        if (maxSearchHitCount == -1 )
+            maxSearchHitCount = configuration.getInt("search.maxhits", 1000);
+        return maxSearchHitCount;
+    }
+
+    public Integer getSearchPageSize() {
+        if (searchPageSize == -1)
+            searchPageSize = configuration.getInt("search.pagesize", 50);
+        return searchPageSize;
+    }
 }

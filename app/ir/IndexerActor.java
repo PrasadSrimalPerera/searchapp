@@ -53,4 +53,8 @@ public class IndexerActor extends UntypedActor {
             indexer.deleteDocument(((IndexOperation.DeleteIndex)message).document);
         }
     }
+
+    public static String getIndexerActorID() {
+        return "user/" + IrConfigurationManager.INDEXER_ACTOR;
+    }
 }

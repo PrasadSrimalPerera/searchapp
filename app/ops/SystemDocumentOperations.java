@@ -26,7 +26,6 @@ public class SystemDocumentOperations {
                         Date.from(Instant.now()),
                         fileContent);
                 SystemDocument.persistDocument(newDocument);
-                Logger.debug("Persisted document: " + documentName);
                 return true;
             } catch (IOException e) {
                 Logger.error("Error persisting document: " + documentName, e);

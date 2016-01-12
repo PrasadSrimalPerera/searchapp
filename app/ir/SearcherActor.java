@@ -48,4 +48,8 @@ public class SearcherActor extends UntypedActor {
             getSender().tell(systemDocumentResultsList, self());
         }
     }
+
+    public static String getSearcherActorID() {
+        return "user/" + IrConfigurationManager.SEARCHER_ACTOR;
+    }
 }

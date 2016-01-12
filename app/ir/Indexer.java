@@ -5,47 +5,25 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import models.SystemDocument;
 import org.apache.lucene.document.*;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.index.*;
 import play.Logger;
-import sun.reflect.FieldInfo;
-
 import java.io.IOException;
-import java.io.StringReader;
-import java.nio.file.Paths;
 
 @Singleton
 public class Indexer {
-    private Directory indexDirectory;
-    private IndexWriterConfig indexWriterConfig;
-    private IndexWriter indexWriter;
-
     @Inject
     private IrConfigurationManager irConfigurationManager;
+    @Inject
+    private RealTimeIrManager realTimeIrManager;
 
     @Inject
     public Indexer() {
     }
 
     public void setupIndex()  {
-        try {
-            this.indexDirectory = FSDirectory.open(Paths.get(irConfigurationManager.getIndexPath()));
-            this.indexWriterConfig = new IndexWriterConfig(irConfigurationManager.getSystemDocumentAnalyzer());
-            this.indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-            this.indexWriter = new IndexWriter(this.indexDirectory, this.indexWriterConfig);
-            this.indexWriter.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void shutdownIndex() throws IOException {
-        this.indexDirectory.close();
-        this.indexWriter.close();
     }
 
     private FieldType getIndexFieldType() {
@@ -57,22 +35,32 @@ public class Indexer {
     }
 
     public void addDocument(SystemDocument systemDocument) throws IOException {
+        TrackingIndexWriter trackingIndexWriter = this.realTimeIrManager.getTrackingIndexWriter();
         Document newDocument = new Document();
-        Field keyField = new StringField("path", systemDocument.getDocumentName(), Field.Store.YES);
+        Field keyField = new StringField(IrConfigurationManager.INDEX_PATH,
+                systemDocument.getDocumentName(),
+                Field.Store.YES);
         newDocument.add(keyField);
 
-        Field contentField = new Field("content", systemDocument.getDocumentContent(), getIndexFieldType());
+        Field contentField = new Field(IrConfigurationManager.INDEXING_CONTENT_FIELD,
+                systemDocument.getDocumentContent(),
+                getIndexFieldType());
         newDocument.add(contentField);
 
-        Field dateField = new StringField("date", DateTools.dateToString(systemDocument.getPublishedDate(),
+        Field dateField = new StringField(IrConfigurationManager.INDEXING_DATE_FIELD,
+                DateTools.dateToString(systemDocument.getPublishedDate(),
                 DateTools.Resolution.SECOND), Field.Store.YES);
         newDocument.add(dateField);
-        this.indexWriter.updateDocument(new Term("path", systemDocument.getDocumentName()), newDocument);
-        this.indexWriter.commit();
+        trackingIndexWriter.updateDocument(new Term(IrConfigurationManager.INDEXING_PATH_FIELD,
+                systemDocument.getDocumentName()),
+                newDocument);
+
         Logger.debug("Document " + systemDocument.getDocumentName() + "add/update successfully");
     }
 
     public void deleteDocument(SystemDocument systemDocument) throws IOException {
-        this.indexWriter.deleteDocuments(new Term(systemDocument.getDocumentName()));
+        TrackingIndexWriter trackingIndexWriter = this.realTimeIrManager.getTrackingIndexWriter();
+        trackingIndexWriter.deleteDocuments(new Term(IrConfigurationManager.INDEXING_PATH_FIELD,
+                systemDocument.getDocumentName()));
     }
 }

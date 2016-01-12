@@ -23,7 +23,7 @@ public class SystemDocumentListener implements BeanPersistListener {
     @Override
     public boolean inserted(Object o) {
         SystemDocument document = (SystemDocument) o;
-        ActorRef indexerActor = Akka.system().actorFor("user/indexer_actor");
+        ActorRef indexerActor = Akka.system().actorFor(IndexerActor.getIndexerActorID());
         indexerActor.tell(new IndexerActor.IndexOperation.AddIndex(document), ActorRef.noSender());
         return true;
     }
@@ -31,7 +31,7 @@ public class SystemDocumentListener implements BeanPersistListener {
     @Override
     public boolean updated(Object o, Set<String> set) {
         SystemDocument document = (SystemDocument) o;
-        ActorRef indexerActor = Akka.system().actorFor("user/indexer_actor");
+        ActorRef indexerActor = Akka.system().actorFor(IndexerActor.getIndexerActorID());
         indexerActor.tell(new IndexerActor.IndexOperation.AddIndex(document), ActorRef.noSender());
         return true;
     }

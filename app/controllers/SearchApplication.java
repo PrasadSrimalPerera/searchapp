@@ -2,20 +2,19 @@ package controllers;
 
 import akka.actor.ActorRef;
 import com.google.gson.Gson;
-import com.google.inject.Inject;
 import ir.*;
 import ops.SystemDocumentOperations;
+import play.Logger;
 import play.libs.Akka;
 import play.libs.F;
 import play.mvc.*;
 import views.html.*;
-
 import java.util.List;
 
 
-public class Application extends Controller {
-    @Inject
-    Indexer indexer;
+public class SearchApplication extends Controller {
+    private static final int SEARCH_TIMEOUT = 1000;
+    private static final String systemDocumentParam = "systemdocument";
 
     public Result index() {
         return ok(index.render("Your new application is ready."));
@@ -23,7 +22,7 @@ public class Application extends Controller {
 
     public F.Promise<Result> postDocument() {
         Http.MultipartFormData body = request().body().asMultipartFormData();
-        Http.MultipartFormData.FilePart systemDocumentFile = body.getFile("systemdocument");
+        Http.MultipartFormData.FilePart systemDocumentFile = body.getFile(systemDocumentParam);
         return persistDocument(systemDocumentFile);
     }
 
@@ -42,11 +41,12 @@ public class Application extends Controller {
 
     public F.Promise<Result> performSearch(String queryString, int fromPage, int toPage) {
         if (!queryString.isEmpty() && fromPage >= 0 && toPage > 0) {
-            ActorRef searcherActor = Akka.system().actorFor("user/searcher_actor");
+            Logger.debug("Receive search query:" + queryString);
+            ActorRef searcherActor = Akka.system().actorFor(SearcherActor.getSearcherActorID());
             return F.Promise.wrap(akka.pattern.Patterns.ask(searcherActor,
                     new SearcherActor.SearchOperation(fromPage,
                             toPage,
-                            queryString), 1000)).
+                            queryString), SEARCH_TIMEOUT)).
                     map(new F.Function<Object, Result>() {
                         @Override
                         public Result apply(Object o) throws Throwable {
@@ -59,7 +59,7 @@ public class Application extends Controller {
         return F.Promise.promise(new F.Function0<Result>() {
             @Override
             public Result apply() throws Throwable {
-                return ok();
+                return badRequest("Invalid Parameters");
             }
         });
     }

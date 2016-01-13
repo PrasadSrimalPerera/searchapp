@@ -16,10 +16,7 @@ public class SystemDocumentListener implements BeanPersistListener {
 
     @Override
     public boolean isRegisterFor(Class<?> aClass) {
-        if (aClass == SystemDocument.class)
-            return true;
-        else
-            return false;
+        return aClass == SystemDocument.class;
     }
 
     @Override
@@ -40,6 +37,7 @@ public class SystemDocumentListener implements BeanPersistListener {
 
     @Override
     public boolean deleted(Object o) {
+        // Not implemented completely
         return false;
     }
 

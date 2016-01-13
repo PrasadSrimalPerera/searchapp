@@ -11,6 +11,10 @@ import play.libs.akka.AkkaGuiceSupport;
 
 /**
  * Created by prasad on 10/01/16.
+ * SearchAppModule, extension of AbstractModule creates all the
+ * application dependency injection entities
+ * IrConfigurationManager, RealTimeIrManager, Indexer, Searcher
+ * and Actors : IndexerActor, SearcherActor
  */
 public class SearchAppModule extends AbstractModule implements AkkaGuiceSupport{
     @Override

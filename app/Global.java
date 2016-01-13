@@ -6,6 +6,10 @@ import java.io.IOException;
 
 /**
  * Created by prasad on 12/01/16.
+ * Global provides an extension of GlobalSettings
+ * We use Global to run important setup/teardown
+ * of DI created entities
+ * (ex. RealTimeIrManager)
  */
 public class Global extends GlobalSettings {
     public void onStart(Application app) {

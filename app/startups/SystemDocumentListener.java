@@ -9,6 +9,8 @@ import java.util.Set;
 
 /**
  * Created by prasad on 08/01/16.
+ * An extension of BeanPersistListener which implements proper action with
+ * the index when system documents are changed (added/updated etc.)
  */
 public class SystemDocumentListener implements BeanPersistListener {
 

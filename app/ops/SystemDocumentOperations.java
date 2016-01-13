@@ -13,8 +13,15 @@ import java.util.Date;
 
 /**
  * Created by prasad on 10/01/16.
+ * A utility class to handle system document creation and persisting document
  */
 public class SystemDocumentOperations {
+    /**
+     * Create and persist system document
+     * @param documentName  document name
+     * @param documentFile  recieved file from client applications
+     * @return  true if successful
+     */
     public static boolean createAndPersistDocument(String documentName,
                                                    File documentFile) {
         InputStream fileStream = null;

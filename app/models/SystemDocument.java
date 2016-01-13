@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * Created by prasad on 08/01/16.
+ * SystemDocument model to persist documents posted on application
  */
 @Entity
 public class SystemDocument extends Model {
@@ -59,6 +60,11 @@ public class SystemDocument extends Model {
         return documentContent;
     }
 
+    /**
+     * Persist document on db provided. If the document already exists,
+     * we update the relevant document fields
+     * @param systemDocument  system document to be saved
+     */
     public static void persistDocument(SystemDocument systemDocument) {
         SystemDocument documentExist;
         if ((documentExist = finder.where().eq("documentName",

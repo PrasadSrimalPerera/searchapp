@@ -4,6 +4,9 @@ import java.util.Date;
 
 /**
  * Created by prasad on 11/01/16.
+ * SystemDocumentResult provides a container class
+ * that holds seach results constructed and send back to the
+ * client applications.
  */
 public class SystemDocumentResult {
     private String systemDocumentName;

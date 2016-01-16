@@ -14,6 +14,14 @@
   -->
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
+  <!-- SQL and bind values -->
+  <!--logger name="org.avaje.ebean.SQL" level="TRACE"/-->
+
+  <!-- Transaction Commit and Rollback events -->
+  <!--logger name="org.avaje.ebean.TXN" level="TRACE"/-->
+
+  <!-- Summary level details -->
+  <!--logger name="org.avaje.ebean.SUM" level="TRACE"/-->
 
   <root level="ERROR">
     <appender-ref ref="STDOUT" />

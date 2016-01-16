@@ -76,4 +76,17 @@ public class SystemDocument extends Model {
             systemDocument.save();
         }
     }
+
+    /**
+     * Delete a document by document ID
+     * @param systemDocumentID  document ID to be deleted
+     */
+    public static boolean deleteDocument(long systemDocumentID) {
+        SystemDocument document = finder.byId(systemDocumentID);
+        if (document != null) {
+            document.delete();
+            return true;
+        }
+        return false;
+    }
 }

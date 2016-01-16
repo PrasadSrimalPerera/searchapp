@@ -3,9 +3,10 @@
 # ~~~
 
 # Home page
-GET      /home                      controllers.SearchApplication.index()
+GET     /home                       controllers.SearchApplication.index()
 POST    /postdocument               controllers.SearchApplication.postDocument()
 GET     /performsearch              controllers.SearchApplication.performSearch()
+DELETE  /deletedocument             controllers.SearchApplication.deleteSystemDocument(documentid :Long)
 
 
 # Map static resources from the /public folder to the /assets URL path

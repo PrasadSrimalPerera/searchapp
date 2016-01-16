@@ -93,5 +93,6 @@ public class Indexer {
         TrackingIndexWriter trackingIndexWriter = this.realTimeIrManager.getTrackingIndexWriter();
         trackingIndexWriter.deleteDocuments(new Term(IrConfigurationManager.INDEXING_PATH_FIELD,
                 systemDocument.getDocumentName()));
+        Logger.debug("Document " + systemDocument.getDocumentName() + " delete successfully");
     }
 }

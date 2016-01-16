@@ -3,6 +3,7 @@ package controllers;
 import akka.actor.ActorRef;
 import com.google.gson.Gson;
 import ir.*;
+import models.SystemDocument;
 import ops.SystemDocumentOperations;
 import play.Logger;
 import play.data.Form;
@@ -50,24 +51,6 @@ public class SearchApplication extends Controller {
     }
 
     /**
-     * persist document async with returning a promise
-     * @param documentFile  the form multi-part data
-     * @return  Promise containing persisting result
-     */
-    private static F.Promise<Result> persistDocument(Http.MultipartFormData.FilePart documentFile) {
-        return F.Promise.promise(new F.Function0<Result>() {
-            @Override
-            public Result apply() throws Throwable {
-                if (SystemDocumentOperations.createAndPersistDocument(documentFile.getFilename(),
-                        documentFile.getFile())) {
-                    return ok("SUCCESS");
-                }
-                return status(BAD_REQUEST);
-            }
-        });
-    }
-
-    /**
      * GET search for document results.
      * @return  Promise containing system document search results.
      */
@@ -97,6 +80,35 @@ public class SearchApplication extends Controller {
             @Override
             public Result apply() throws Throwable {
                 return badRequest("Invalid Parameters");
+            }
+        });
+    }
+
+    /**
+     * DELETE operation to remove System document from repository & search
+     * @param systemDocumentID  document ID to be deleted
+     * @return  delete operation status
+     */
+    public Result deleteSystemDocument(long systemDocumentID) {
+        if (SystemDocument.deleteDocument(systemDocumentID))
+            return ok("SUCCESS");
+        return badRequest("Invalid Parameter");
+    }
+
+    /**
+     * persist document async with returning a promise
+     * @param documentFile  the form multi-part data
+     * @return  Promise containing persisting result
+     */
+    private static F.Promise<Result> persistDocument(Http.MultipartFormData.FilePart documentFile) {
+        return F.Promise.promise(new F.Function0<Result>() {
+            @Override
+            public Result apply() throws Throwable {
+                if (SystemDocumentOperations.createAndPersistDocument(documentFile.getFilename(),
+                        documentFile.getFile())) {
+                    return ok("SUCCESS");
+                }
+                return status(BAD_REQUEST);
             }
         });
     }

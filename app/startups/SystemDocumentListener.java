@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import com.avaje.ebean.event.BeanPersistListener;
 import ir.IndexerActor;
 import models.SystemDocument;
+import play.Logger;
 import play.libs.Akka;
 import java.util.Set;
 
@@ -37,7 +38,9 @@ public class SystemDocumentListener implements BeanPersistListener {
 
     @Override
     public boolean deleted(Object o) {
-        // Not implemented completely
+        SystemDocument document = (SystemDocument) o;
+        ActorRef indexerActor = Akka.system().actorFor(IndexerActor.getIndexerActorID());
+        indexerActor.tell(new IndexerActor.IndexOperation.DeleteIndex(document), ActorRef.noSender());
         return false;
     }
 
